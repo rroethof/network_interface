@@ -28,6 +28,11 @@
   file: path=/etc/network/interfaces.d  state=directory
   when: ansible_os_family == "Debian"
 
+- name: Create resolv.conf
+  template: src=resolv.conf.j2 dest=/etc/resolv.conf
+  with_items: "{{ dns_servers  }}"
+  when: dns_servers is defined
+
 - name: Create the network configuration file for ethernet devices
   template: src=ethernet_{{ ansible_os_family }}.j2 dest={{ net_path }}/ifcfg-{{ item.device }}
   with_items: "{{ network_ether_interfaces }}"
